@@ -97,7 +97,7 @@ function App() {
       ])
 
       if (!origResult) {
-        setError(`Could not find ${origType} "${origValue}" (ref/orig).`)
+        setError(`Could not find ${origType} "${origValue}" (old).`)
         return
       }
       if (!newResult) {
@@ -159,7 +159,7 @@ function App() {
         </span>
 
         <div className="symbol-input">
-          <span className="symbol-label">Ref/Orig</span>
+          <span className="symbol-label">Old</span>
           <select
             value={origType}
             onChange={(e) => setOrigType(e.target.value as SymbolType)}
