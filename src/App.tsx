@@ -8,6 +8,7 @@ import {
   type ScannedFile,
 } from './lib/projectScan'
 import { findFunctionInFiles } from './lib/phpExtract'
+import { hsla } from './lib/color'
 import './App.css'
 
 const LANGUAGES = [
@@ -207,7 +208,22 @@ function App() {
           language={language}
           original={originalRef.current}
           modified={modifiedRef.current}
-          theme="vs-dark"
+          theme="diff-viewer-dark"
+          beforeMount={(monaco) => {
+            // Diff colors live here, not in CSS. Edit these to restyle diff highlighting.
+            monaco.editor.defineTheme('diff-viewer-dark', {
+              base: 'vs-dark',
+              inherit: true,
+              rules: [],
+              colors: {
+                'diffEditor.insertedLineBackground': hsla(135, 50, 50, 0.15),
+                'diffEditor.removedLineBackground': hsla(0, 50, 50, 0.15),
+                'diffEditor.insertedTextBackground': hsla(135, 50, 50, 0.5),
+                'diffEditor.removedTextBackground': hsla(0, 50, 50, 0.5),
+                'diffEditor.diagonalFill': hsla(0, 0, 25, 1),
+              },
+            })
+          }}
           options={{
             renderSideBySide: !inline,
             diffAlgorithm: 'advanced',
