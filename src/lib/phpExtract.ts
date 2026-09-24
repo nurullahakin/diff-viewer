@@ -28,7 +28,9 @@ export function extractPhpFunction(source: string, name: string): string | null 
   }
   if (end === -1) return null
 
-  return source.slice(lineStart, end).trimEnd()
+  const body = source.slice(lineStart, end).trimEnd()
+  // Monaco needs the opening tag to apply PHP syntax highlighting to a bare function body.
+  return body.startsWith('<?php') ? body : `<?php\n${body}`
 }
 
 export async function findFunctionInFiles(
