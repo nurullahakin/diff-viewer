@@ -145,18 +145,20 @@ function App() {
       </header>
 
       <section className="project-bar">
-        <button
-          type="button"
-          onClick={handleSelectProject}
-          disabled={!isDirectoryPickerSupported() || scanning}
-        >
-          {scanning ? 'Scanning…' : 'Select Project Folder'}
-        </button>
-        <span className="project-status">
-          {projectName
-            ? `${projectName} — ${projectFiles.length} PHP file(s)`
-            : 'No project selected (PHP only, for now)'}
-        </span>
+        <div className="project-select">
+          <button
+            type="button"
+            onClick={handleSelectProject}
+            disabled={!isDirectoryPickerSupported() || scanning}
+          >
+            {scanning ? 'Scanning…' : 'Select Project Folder'}
+          </button>
+          <span className="project-status">
+            {projectName
+              ? `${projectName} — ${projectFiles.length} PHP file(s)`
+              : 'No project selected (PHP only, for now)'}
+          </span>
+        </div>
 
         <div className="symbol-input">
           <span className="symbol-label">Old</span>
@@ -193,7 +195,7 @@ function App() {
         </div>
 
         <button type="button" onClick={handleFind} disabled={finding}>
-          {finding ? 'Finding…' : 'Scan / Find'}
+          {finding ? 'Finding…' : 'Compare'}
         </button>
       </section>
 
