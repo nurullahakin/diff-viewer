@@ -116,4 +116,5 @@
 .editor-wrap {
   flex: 1;
   min-height: 0;
+  background: #1e1e1e;
 }
