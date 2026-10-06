@@ -47,7 +47,7 @@ function App() {
   const modifiedRef = useRef(DEFAULT_MODIFIED)
   const diffEditorRef = useRef<MonacoDiffEditor | null>(null)
   const [inline, setInline] = useState(false)
-  const [language, setLanguage] = useState('javascript')
+  const [language, setLanguage] = useState('php')
 
   const [projectName, setProjectName] = useState<string | null>(null)
   const [projectFiles, setProjectFiles] = useState<ScannedFile[]>([])
@@ -68,6 +68,7 @@ function App() {
       setScanning(true)
       const files = await scanPhpFiles(dirHandle)
       setProjectFiles(files)
+      setLanguage('php')
     } catch (err) {
       if (err instanceof DOMException && err.name === 'AbortError') return
       setError(err instanceof Error ? err.message : 'Failed to select project folder.')
@@ -80,7 +81,7 @@ function App() {
     if (!value.trim()) return null
     return type === 'file'
       ? findFileByPath(projectFiles, value)
-      : findFunctionInFiles(projectFiles, value)
+      : findFunctionInFiles(projectFiles, value, language === 'php')
   }
 
   async function handleFind() {
@@ -111,6 +112,8 @@ function App() {
       diffEditorRef.current?.getOriginalEditor().setValue(origResult.code)
       diffEditorRef.current?.getModifiedEditor().setValue(newResult.code)
       setLanguage('php')
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to find symbols.')
     } finally {
       setFinding(false)
     }
