@@ -1,3 +1,5 @@
+import { findFileByPath } from './projectScan'
+
 // Minimal PHP function extraction: locates `function name(` and captures the
 // balanced-brace body. Good enough for typical PHP source, not a full parser.
 
@@ -36,7 +38,19 @@ export function extractPhpFunction(source: string, name: string): string | null 
 export async function findFunctionInFiles(
   files: { path: string; handle: FileSystemFileHandle }[],
   name: string,
+  allowFileQualifier = true,
 ): Promise<{ path: string; code: string } | null> {
+  if (allowFileQualifier && name.includes('::')) {
+    const parts = name.split('::').map((part) => part.trim())
+    if (parts.length !== 2 || !parts[0] || !parts[1]) {
+      throw new Error('Use File::function for a file-scoped PHP function search.')
+    }
+    const result = await findFileByPath(files, parts[0], true)
+    if (!result) return null
+    const code = extractPhpFunction(result.code, parts[1])
+    return code ? { path: result.path, code } : null
+  }
+
   for (const file of files) {
     const fileData = await file.handle.getFile()
     const text = await fileData.text()

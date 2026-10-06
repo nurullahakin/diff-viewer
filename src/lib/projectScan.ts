@@ -62,6 +62,7 @@ export async function scanPhpFiles(
 export async function findFileByPath(
   files: ScannedFile[],
   rawPath: string,
+  rejectAmbiguous = false,
 ): Promise<{ path: string; code: string } | null> {
   const trimmed = rawPath.trim()
   if (!trimmed) return null
@@ -80,9 +81,13 @@ export async function findFileByPath(
 
   for (let start = 0; start < segments.length; start++) {
     const suffix = segments.slice(start).join('/')
-    const match = files.find(
+    const matches = files.filter(
       (f) => f.path === suffix || f.path.endsWith(`/${suffix}`),
     )
+    if (rejectAmbiguous && matches.length > 1) {
+      throw new Error(`Multiple files match "${rawPath}". Use a relative file path before ::.`)
+    }
+    const match = matches[0]
     if (match) {
       const file = await match.handle.getFile()
       return { path: match.path, code: await file.text() }
