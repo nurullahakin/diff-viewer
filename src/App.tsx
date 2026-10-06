@@ -226,10 +226,11 @@ function App() {
               inherit: true,
               rules: [],
               colors: {
-                'diffEditor.insertedLineBackground': hsla(135, 50, 50, 0.15),
-                'diffEditor.removedLineBackground': hsla(0, 50, 50, 0.15),
-                'diffEditor.insertedTextBackground': hsla(135, 50, 50, 0.5),
-                'diffEditor.removedTextBackground': hsla(0, 50, 50, 0.5),
+                'diffEditor.insertedLineBackground': hsla(60, 100, 50, 0.05),
+                'diffEditor.removedLineBackground': hsla(0, 100, 50, 0.15),
+                'diffEditor.insertedTextBackground': hsla(120, 100, 50, 0.15),
+                'diffEditor.removedTextBackground': hsla(0, 100, 50, 0.25),
+                'editor.selectionBackground': '#ffff003c',
                 'diffEditor.diagonalFill': hsla(0, 0, 25, 1),
               },
             })
