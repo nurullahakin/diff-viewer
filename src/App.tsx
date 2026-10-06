@@ -55,9 +55,8 @@ function App() {
   const [finding, setFinding] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  const [origType, setOrigType] = useState<SymbolType>('function')
+  const [symbolType, setSymbolType] = useState<SymbolType>('function')
   const [origValue, setOrigValue] = useState('')
-  const [newType, setNewType] = useState<SymbolType>('function')
   const [newValue, setNewValue] = useState('')
 
   async function handleSelectProject() {
@@ -77,9 +76,9 @@ function App() {
     }
   }
 
-  async function resolveSymbol(type: SymbolType, value: string) {
+  async function resolveSymbol(value: string) {
     if (!value.trim()) return null
-    return type === 'file'
+    return symbolType === 'file'
       ? findFileByPath(projectFiles, value)
       : findFunctionInFiles(projectFiles, value, language === 'php')
   }
@@ -94,16 +93,16 @@ function App() {
     setFinding(true)
     try {
       const [origResult, newResult] = await Promise.all([
-        resolveSymbol(origType, origValue),
-        resolveSymbol(newType, newValue),
+        resolveSymbol(origValue),
+        resolveSymbol(newValue),
       ])
 
       if (!origResult) {
-        setError(`Could not find ${origType} "${origValue}" (old).`)
+        setError(`Could not find ${symbolType} "${origValue}" (old).`)
         return
       }
       if (!newResult) {
-        setError(`Could not find ${newType} "${newValue}" (new).`)
+        setError(`Could not find ${symbolType} "${newValue}" (new).`)
         return
       }
 
@@ -164,37 +163,34 @@ function App() {
           </span>
         </div>
 
-        <div className="symbol-input">
-          <span className="symbol-label">Old</span>
+        <label className="symbol-input">
+          <span className="symbol-label">Type</span>
           <select
-            value={origType}
-            onChange={(e) => setOrigType(e.target.value as SymbolType)}
+            value={symbolType}
+            onChange={(e) => setSymbolType(e.target.value as SymbolType)}
           >
             <option value="function">Function</option>
             <option value="file">File</option>
           </select>
+        </label>
+
+        <div className="symbol-input">
+          <span className="symbol-label">Old</span>
           <input
             type="text"
             value={origValue}
             onChange={(e) => setOrigValue(e.target.value)}
-            placeholder={origType === 'file' ? 'path/to/File.php' : 'functionName'}
+            placeholder={symbolType === 'file' ? 'path/to/File.php' : 'functionName'}
           />
         </div>
 
         <div className="symbol-input">
           <span className="symbol-label">New</span>
-          <select
-            value={newType}
-            onChange={(e) => setNewType(e.target.value as SymbolType)}
-          >
-            <option value="function">Function</option>
-            <option value="file">File</option>
-          </select>
           <input
             type="text"
             value={newValue}
             onChange={(e) => setNewValue(e.target.value)}
-            placeholder={newType === 'file' ? 'path/to/File.php' : 'functionName'}
+            placeholder={symbolType === 'file' ? 'path/to/File.php' : 'functionName'}
           />
         </div>
 
