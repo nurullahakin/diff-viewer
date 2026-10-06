@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useRef, useState, type ClipboardEvent } from 'react'
 import { DiffEditor, type MonacoDiffEditor } from '@monaco-editor/react'
 import {
   findFileByPath,
@@ -58,6 +58,15 @@ function App() {
   const [symbolType, setSymbolType] = useState<SymbolType>('function')
   const [origValue, setOrigValue] = useState('')
   const [newValue, setNewValue] = useState('')
+
+  function handleSymbolPaste(event: ClipboardEvent<HTMLInputElement>) {
+    const parts = event.clipboardData.getData('text/plain').split('->').map((part) => part.trim())
+    if (parts.length !== 2 || !parts[0] || !parts[1]) return
+
+    event.preventDefault()
+    setOrigValue(parts[0])
+    setNewValue(parts[1])
+  }
 
   async function handleSelectProject() {
     setError(null)
@@ -180,6 +189,7 @@ function App() {
             type="text"
             value={origValue}
             onChange={(e) => setOrigValue(e.target.value)}
+            onPaste={handleSymbolPaste}
             placeholder={symbolType === 'file' ? 'path/to/File.php' : 'functionName'}
           />
         </div>
@@ -190,6 +200,7 @@ function App() {
             type="text"
             value={newValue}
             onChange={(e) => setNewValue(e.target.value)}
+            onPaste={handleSymbolPaste}
             placeholder={symbolType === 'file' ? 'path/to/File.php' : 'functionName'}
           />
         </div>
