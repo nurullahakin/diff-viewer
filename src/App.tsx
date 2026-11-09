@@ -48,6 +48,7 @@ function App() {
   const diffEditorRef = useRef<MonacoDiffEditor | null>(null)
   const [inline, setInline] = useState(false)
   const [wrapLines, setWrapLines] = useState(false)
+  const [highlightUnicode, setHighlightUnicode] = useState(true)
 
   // Monaco sets wordWrapOverride2='off' on the original editor in inline mode and never resets it,
   // which blocks wrapping on the old side after toggling back to side-by-side. Clear it ourselves.
@@ -171,6 +172,14 @@ function App() {
             />
             Wrap lines
           </label>
+          <label className="toggle">
+            <input
+              type="checkbox"
+              checked={highlightUnicode}
+              onChange={(e) => setHighlightUnicode(e.target.checked)}
+            />
+            Highlight unusual chars
+          </label>
         </div>
       </header>
 
@@ -257,6 +266,12 @@ function App() {
             renderSideBySide: !inline,
             wordWrap: wrapLines ? 'on' : 'off',
             diffWordWrap: wrapLines ? 'on' : 'off',
+            // Boxes around chars like Turkish "ı" (ambiguous/non-ASCII/invisible).
+            unicodeHighlight: {
+              ambiguousCharacters: highlightUnicode,
+              invisibleCharacters: highlightUnicode,
+              nonBasicASCII: false,
+            },
             diffAlgorithm: 'advanced',
             originalEditable: true,
             automaticLayout: true,
