@@ -1,4 +1,4 @@
-import { useRef, useState, type ClipboardEvent } from 'react'
+import { useEffect, useRef, useState, type ClipboardEvent } from 'react'
 import { DiffEditor, type MonacoDiffEditor } from '@monaco-editor/react'
 import {
   findFileByPath,
@@ -47,6 +47,16 @@ function App() {
   const modifiedRef = useRef(DEFAULT_MODIFIED)
   const diffEditorRef = useRef<MonacoDiffEditor | null>(null)
   const [inline, setInline] = useState(false)
+  const [wrapLines, setWrapLines] = useState(false)
+
+  // Monaco sets wordWrapOverride2='off' on the original editor in inline mode and never resets it,
+  // which blocks wrapping on the old side after toggling back to side-by-side. Clear it ourselves.
+  // Runs after DiffEditor's own options effect (child effects run first).
+  useEffect(() => {
+    diffEditorRef.current?.getOriginalEditor().updateOptions({
+      wordWrapOverride2: inline ? 'off' : 'inherit',
+    })
+  }, [inline, wrapLines])
   const [language, setLanguage] = useState('php')
 
   const [projectName, setProjectName] = useState<string | null>(null)
@@ -153,6 +163,14 @@ function App() {
             />
             Inline view
           </label>
+          <label className="toggle">
+            <input
+              type="checkbox"
+              checked={wrapLines}
+              onChange={(e) => setWrapLines(e.target.checked)}
+            />
+            Wrap lines
+          </label>
         </div>
       </header>
 
@@ -237,6 +255,8 @@ function App() {
           }}
           options={{
             renderSideBySide: !inline,
+            wordWrap: wrapLines ? 'on' : 'off',
+            diffWordWrap: wrapLines ? 'on' : 'off',
             diffAlgorithm: 'advanced',
             originalEditable: true,
             automaticLayout: true,
