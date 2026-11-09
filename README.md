@@ -9,6 +9,17 @@ npm install
 npm run dev
 ```
 Open the local URL printed in the terminal. If the default port is busy, the server chooses another port.
+## Build
+
+Type-check and create a production build in `dist`:
+```sh
+npm run build
+```
+Preview the build locally:
+```sh
+npm run preview
+```
+To host it yourself, serve the contents of `dist` as static files over HTTPS or from `localhost`, because folder access requires a secure context. The build uses absolute asset paths, so serve it from the site root.
 ## Compare Code
 
 1. Click **Select Project Folder**, choose your PHP project, and allow read access.
