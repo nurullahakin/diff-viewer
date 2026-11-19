@@ -19,7 +19,10 @@ Preview the build locally:
 ```sh
 npm run preview
 ```
-To host it yourself, serve the contents of `dist` as static files over HTTPS or from `localhost`, because folder access requires a secure context. The build uses absolute asset paths, so serve it from the site root.
+To host it yourself, serve the contents of `dist` as static files over HTTPS or from `localhost`, because folder access requires a secure context. The build expects to be served under `/diff-viewer/`; change `base` in `vite.config.ts` to host it at a different path.
+## Deploy
+
+Every push to `main` builds the app and deploys it to GitHub Pages at <https://nurullahakin.github.io/diff-viewer/> through `.github/workflows/deploy.yml`. In the repository settings, **Pages → Source** must be set to **GitHub Actions**.
 ## Compare Code
 
 1. Click **Select Project Folder**, choose your PHP project, and allow read access.
